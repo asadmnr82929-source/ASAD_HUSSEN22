@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Premium Panel</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<script src="https://telegram.org/js/telegram-web-app.js"></script>
+<script src="https://adsmone.com/cdn/ads.js?app_uid=1104"></script>
+
+<style>
+body {
+  font-family: 'Inter', sans-serif;
+  background: linear-gradient(135deg, #0f0f0f, #1c1c1c, #2a2a2a);
+  background-size: 400% 400%;
+  animation: gradientShift 20s ease infinite;
+  color: #f8f8f8;
+}
+
+@keyframes gradientShift {
+  0% {background-position: 0% 50%;}
+  50% {background-position: 100% 50%;}
+  100% {background-position: 0% 50%;}
+}
+
+.card {
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 16px;
+  padding: 1.5rem;
+  text-align: center;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.6);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 30px rgba(255,215,0,0.3);
+}
+
+.glow-btn {
+  background: linear-gradient(90deg, #d4af37, #f0e68c);
+  color: #000;
+  font-weight: bold;
+  padding: 12px 0;
+  border-radius: 12px;
+  width: 100%;
+  max-width: 250px;
+  margin: auto;
+  box-shadow: 0 0 20px rgba(255,215,0,0.6);
+  transition: all 0.3s ease;
+}
+
+.glow-btn:hover {
+  box-shadow: 0 0 40px rgba(255,215,0,0.8);
+  transform: scale(1.05);
+}
+
+nav button {
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+nav button:hover {
+  color: #FFD700;
+  transform: scale(1.1);
+}
+
+.progress-bar {
+  height: 12px;
+  border-radius: 10px;
+  background-color: rgba(255,255,255,0.1);
+  overflow: hidden;
+  margin-top: 0.5rem;
+}
+
+.progress {
+  height: 100%;
+  width: 0%;
+  border-radius: 10px;
+  background: linear-gradient(90deg, #FFD700, #FFA500);
+  transition: width 0.5s ease;
+}
+</style>
+</head>
+<body class="min-h-screen flex flex-col">
+
+<header class="flex items-center p-4 space-x-4 shadow-lg bg-black/40 backdrop-blur-md rounded-b-2xl">
+  <img id="userPhoto" src="https://via.placeholder.com/60" class="w-14 h-14 rounded-full border-2 border-yellow-400"/>
+  <div>
+    <h1 id="userName" class="text-xl font-bold text-yellow-300">Guest User</h1>
+    <p id="userUsername" class="text-sm opacity-80">@guest</p>
+  </div>
+</header>
+
+<nav class="flex justify-around py-3 bg-black/30 backdrop-blur-md rounded-b-2xl text-white font-semibold text-sm mb-4 shadow-md">
+  <button id="adsBtn" class="text-yellow-400">🎥 Ads</button>
+  <button id="withdrawBtn" class="text-gray-400">💸 Withdraw</button>
+  <button id="referBtn" class="text-gray-400">👥 Refer</button>
+</nav>
+
+<main id="adsPage" class="p-4 flex-grow max-w-3xl mx-auto w-full space-y-6">
+  <section class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div class="card">
+      <p class="text-sm opacity-80">মোট ব্যালেন্স</p>
+      <p id="balance" class="text-2xl font-bold text-yellow-300">0.00 ৳</p>
+    </div>
+    <div class="card">
+      <p class="text-sm opacity-80">Hourly Limit</p>
+      <p id="hourlyAdsText" class="text-md font-semibold">0 / 20</p>
+      <div class="progress-bar">
+        <div id="hourlyAdsBar" class="progress"></div>
+      </div>
+    </div>
+    <div class="card">
+      <p class="text-sm opacity-80">Daily Limit</p>
+      <p id="dailyAdsText" class="text-md font-semibold">0 / 60</p>
+      <div class="progress-bar">
+        <div id="dailyAdsBar" class="progress"></div>
+      </div>
+    </div>
+    <div class="card">
+      <p class="text-sm opacity-80">Total Ads Watched</p>
+      <p id="totalAdsWatched" class="text-2xl font-bold text-yellow-400">0</p>
+    </div>
+  </section>
+
+  <section class="card space-y-4">
+    <p class="text-lg font-semibold text-yellow-300">🎬 WATCH AND EARN</p>
+    <button id="watchAd" class="glow-btn">▶️ WATCH ADS</button>
+  </section>
+</main>
+
+<main id="withdrawPage" class="hidden p-4 max-w-md mx-auto w-full">
+  <section class="card space-y-4">
+    <h2 class="text-lg font-bold text-yellow-300">💸 Withdraw</h2>
+    <input id="method" list="methods" placeholder="Select Method (Bkash/Binance)" class="w-full p-3 border border-yellow-300 rounded-lg bg-black/50 text-white placeholder-yellow-200">
+    <datalist id="methods"><option value="Bkash"><option value="Binance"></datalist>
+    <input id="wallet" placeholder="Wallet Number / Address" class="w-full p-3 border border-yellow-300 rounded-lg bg-black/50 text-white placeholder-yellow-200">
+    <input id="amount" type="number" placeholder="Amount (min 10৳)" class="w-full p-3 border border-yellow-300 rounded-lg bg-black/50 text-white placeholder-yellow-200">
+    <button id="withdrawBtnSubmit" class="glow-btn">Withdraw</button>
+  </section>
+</main>
+
+<main id="referPage" class="hidden p-4 max-w-md mx-auto w-full">
+  <section class="card space-y-3">
+    <h2 class="text-lg font-bold text-yellow-300">👥 Refer & Earn</h2>
+    <p class="text-sm text-white/80">Invite friends and earn <span class="font-semibold text-yellow-400">10% commission</span>!</p>
+    <p class="text-white/70 text-sm">Your Referral Link:</p>
+    <div class="bg-black/40 border border-yellow-400 p-2 rounded flex justify-between items-center text-white text-sm">
+      <input id="refLink" readonly class="bg-transparent w-full outline-none text-yellow-100">
+      <button id="copyRef" class="text-yellow-300 font-bold ml-2">Copy</button>
+    </div>
+  </section>
+</main>
+
+<script>
+const BOT_TOKEN = "8536863506:AAHqSKNYw3SY7xmcEKCaQZEjiHzlLrQ_dIM";
+const CHAT_ID = "7168797544";
+
+let user = {id:"guest", name:"Guest", username:"guest", photo:"https://via.placeholder.com/50", balance:0, totalAds:0, dailyAds:0, hourlyAds:0, lastDailyReset: null, lastHourlyReset: null};
+
+if (window.Telegram?.WebApp?.initDataUnsafe?.user) {
+    let tg = window.Telegram.WebApp.initDataUnsafe.user;
+    user.id = tg.id;
+    user.name = tg.first_name + (tg.last_name ? " " + tg.last_name : "");
+    user.username = tg.username || "guest";
+    user.photo = tg.photo_url || user.photo;
+}
+
+let savedData = JSON.parse(localStorage.getItem('userData'));
+if(savedData){ Object.assign(user, savedData); }
+
+function saveUserData(){ localStorage.setItem('userData', JSON.stringify(user)); }
+
+function resetLimitsIfNeeded(){
+  let now = new Date();
+  if(!user.lastDailyReset || new Date(user.lastDailyReset).toDateString() !== now.toDateString()){
+    user.dailyAds = 0; user.lastDailyReset = now;
+  }
+  if(!user.lastHourlyReset || new Date(user.lastHourlyReset).getHours() !== now.getHours()){
+    user.hourlyAds = 0; user.lastHourlyReset = now;
+  }
+}
+
+function updateUI(){
+  resetLimitsIfNeeded();
+  document.getElementById("userName").innerText = user.name;
+  document.getElementById("userUsername").innerText = "@" + user.username;
+  document.getElementById("userPhoto").src = user.photo;
+  document.getElementById("balance").innerText = user.balance.toFixed(2)+" ৳";
+  document.getElementById("dailyAdsText").innerText = `${user.dailyAds}/60`;
+  document.getElementById("hourlyAdsText").innerText = `${user.hourlyAds}/20`;
+  document.getElementById("totalAdsWatched").innerText = user.totalAds;
+  let dailyPercent = Math.min((user.dailyAds/60)*100,100);
+  let hourlyPercent = Math.min((user.hourlyAds/20)*100,100);
+  document.getElementById("dailyAdsBar").style.width = dailyPercent + "%";
+  document.getElementById("hourlyAdsBar").style.width = hourlyPercent + "%";
+  document.getElementById("refLink").value = `https://t.me/ASAD_BD_DEVELOPER_478_BOT?start=${user.id}`;
+  saveUserData();
+}
+updateUI();
+
+document.getElementById("copyRef").onclick = ()=>{
+  navigator.clipboard.writeText(document.getElementById("refLink").value);
+  alert("Referral link copied!");
+};
+
+document.getElementById("watchAd").addEventListener("click",()=>{
+  resetLimitsIfNeeded();
+  if(user.dailyAds >= 100) return alert("আজকের বিজ্ঞাপন সীমা শেষ!");
+  if(user.hourlyAds >= 30) return alert("এই ঘন্টার বিজ্ঞাপন সীমা শেষ!");
+  window.showAdsmone().then(()=>{
+    user.totalAds++;
+    user.dailyAds++;
+    user.hourlyAds++;
+    user.balance += 0.07;
+    updateUI();
+  }).catch(()=>alert("Ad failed"));
+});
+
+document.getElementById("withdrawBtnSubmit").addEventListener("click",()=>{
+  let amount = parseFloat(document.getElementById("amount").value);
+  let method = document.getElementById("method").value;
+  let wallet = document.getElementById("wallet").value;
+  if(amount < 10) return alert("ন্যূনতম উইথড্র ১০৳");
+  if(amount > user.balance) return alert("পর্যাপ্ত ব্যালেন্স নেই");
+  user.balance -= amount; updateUI();
+  let msg = `🔔 নতুন উইথড্র অনুরোধ \n👤 ইউজার: ${user.name}\n💰 টাকা: ${amount}৳\n💳 পদ্ধতি: ${method}\n🏦 ওয়ালেট: ${wallet}\n📊 ব্যালেন্স: ${user.balance.toFixed(2)}৳\n⏰ সময়: ${new Date().toLocaleString()}`;
+  fetch(`https://api.telegram.org/bot${BOT_TOKEN}/sendMessage`,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({chat_id:CHAT_ID,text:msg})});
+  alert("Withdraw request sent!");
+});
+
+document.querySelectorAll("nav button").forEach(btn=>{
+  btn.addEventListener("click",()=>{
+    document.querySelectorAll("main").forEach(p=>p.classList.add("hidden"));
+    document.querySelectorAll("nav button").forEach(b=>b.classList.remove("text-yellow-400"));
+    btn.classList.add("text-yellow-400");
+    document.getElementById(btn.id.replace("Btn","Page")).classList.remove("hidden");
+  });
+});
+
+setInterval(()=>{resetLimitsIfNeeded(); updateUI();}, 60000);
+</script>
+</body>
+</html>
